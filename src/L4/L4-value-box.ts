@@ -47,10 +47,10 @@ export interface SymbolSExp {
 export interface TracedClosure {
     // add missing fields
 }
-export const makeTracedClosure = (closure: Closure, name: string): TracedClosure =>
+export const makeTracedClosure = (closure: Closure, name: string): TracedClosure => {}
     // complete this
     
-export const isTraceClosure = (x: any): x is TracedClosure => 
+export const isTraceClosure = (x: any): x is TracedClosure => {}
     // complete this
 
 // @@L4-BOX-VALUE

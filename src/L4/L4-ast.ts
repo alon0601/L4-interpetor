@@ -130,7 +130,7 @@ export const makeSetExp = (v: VarRef, val: CExp): SetExp =>
     ({tag: "SetExp", var: v, val: val});
 
 // HW3
-export const makeTraceExp = (v: VarRef): TraceExp =>
+export const makeTraceExp = (v: VarRef): TraceExp => 
     // to be completed.
 
 // Type predicates for disjoint types
