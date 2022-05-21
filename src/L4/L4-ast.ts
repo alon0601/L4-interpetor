@@ -252,9 +252,8 @@ const parseProcExp = (vars: Sexp, body: Sexp[]): Result<ProcExp> =>
 // HW3
 export const parseTraceExp: (params: Sexp[]) => Result<TraceExp> = 
     (params) => 
-        params.length ! == 1 ? makeFailure("Expression not of form trace <varRef>") :
-        isArray(params) ? makeFailure("first exp need to be var ref") : 
-        makeOk(makeTraceExp(makeVarRef(first(params))));
+        params.length !== 1 ? makeFailure("Expression not of form trace <varRef>") :
+        isString(params[0]) ? makeOk(makeTraceExp(makeVarRef(params[0]))) :makeFailure("first exp need to be var ref");
         
 const isGoodBindings = (bindings: Sexp): bindings is [string, Sexp][] =>
     isArray(bindings) &&

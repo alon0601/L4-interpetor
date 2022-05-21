@@ -8,9 +8,10 @@ import { append, map } from 'ramda';
 import { isArray, isNumber, isString } from '../shared/type-predicates';
 import { CExp, isPrimOp, PrimOp, VarDecl, unparse } from './L4-ast';
 import { Env } from './L4-env-box';
+import { Box, makeBox } from '../shared/box';
 
 // Add void for value of side-effect expressions - set! and define
-export type Value = SExpValue | Closure | TracedClosure // HW3
+export type Value = SExpValue | Closure | TracedClosure | void // HW3
 
 export type Functional = PrimOp | Closure;
 export const isFunctional = (x: any): x is Functional => isPrimOp(x) || isClosure(x);
@@ -45,11 +46,12 @@ export interface SymbolSExp {
 
 // HW3
 export interface TracedClosure {
-    // add missing fields
     tag: "TracedClosure"
-
+    closure: Closure
+    name: string
+    frameNum: Box <number>
 }
-export const makeTracedClosure = (closure: Closure, name: string): TracedClosure => {}
+export const makeTracedClosure = (closure: Closure, name: string): TracedClosure => ({tag: "TracedClosure", closure: closure, name: name, frameNum: makeBox(0)});
     // complete this
     
 export const isTraceClosure = (x: any): x is TracedClosure => x.tag === "TracedClosure"

@@ -13,6 +13,7 @@ import { applyPrimitive } from "./evalPrimitive-box";
 import { first, rest, isEmpty, cons } from "../shared/list";
 import { Result, bind, mapv, mapResult, makeFailure, makeOk } from "../shared/result";
 import { parse as p } from "../shared/parser";
+import { setBox, unbox } from "../shared/box";
 
 // ========================================================
 // Eval functions
@@ -33,7 +34,7 @@ const applicativeEval = (exp: CExp, env: Env): Result<Value> => {
     isAppExp(exp) ? bind(applicativeEval(exp.rator, env), (proc: Value) =>
                         bind(mapResult((rand: CExp) => applicativeEval(rand, env), exp.rands), (args: Value[]) =>
                             applyProcedure(proc, args))) :
-    isTraceExp(exp) ? evalTraceExp(exp) : // HW3
+    isTraceExp(exp) ? evalTraceExp(exp,env) : // HW3
     exp;
 
 }
@@ -43,8 +44,13 @@ export const isTrueValue = (x: Value): boolean =>
 
     
 // HW3
-const evalTraceExp = (exp: TraceExp): Result<void> =>
-    // complete this
+const evalTraceExp = (exp: TraceExp, env: Env): Result<void> => 
+bind(applyEnvBdg(env,exp.var.var),
+        (binding: FBinding): Result<void> =>
+        {const c = unbox(binding.val)
+        if (isClosure(c))
+            return makeOk(setFBinding(binding, makeTracedClosure(c,binding.var))) 
+        return makeFailure("Not a Closure")})
 
 // HW3 use these functions
 const printPreTrace = (name: string, vals: Value[], counter: number): void =>
@@ -75,9 +81,17 @@ const applyClosure = (proc: Closure, args: Value[]): Result<Value> => {
     return evalSequence(proc.body, makeExtEnv(vars, args, proc.env));
 }
 
-const applyTracedClosure = (proc: TracedClosure, args: Value[]): Result<Value> => 
-    // complete this
+const setAndPrint = (x: Value, proc: TracedClosure) => {
+    setBox(proc.frameNum,unbox(proc.frameNum) - 1)
+    printPostTrace(x,unbox(proc.frameNum))
+    return x
+}
 
+const applyTracedClosure = (proc: TracedClosure, args: Value[]): Result<Value> => {
+    printPreTrace(proc.name,args,unbox(proc.frameNum))
+    setBox(proc.frameNum,unbox(proc.frameNum) + 1)
+    return mapv(applyClosure(proc.closure,args),(x : Value) => setAndPrint(x , proc))
+    }
 
 
 // Evaluate a sequence of expressions (in a program)
