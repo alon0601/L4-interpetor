@@ -46,12 +46,13 @@ export interface SymbolSExp {
 // HW3
 export interface TracedClosure {
     // add missing fields
+    tag: "TracedClosure"
+
 }
 export const makeTracedClosure = (closure: Closure, name: string): TracedClosure => {}
     // complete this
     
-export const isTraceClosure = (x: any): x is TracedClosure => {}
-    // complete this
+export const isTraceClosure = (x: any): x is TracedClosure => x.tag === "TracedClosure"
 
 // @@L4-BOX-VALUE
 // Add void for value of side-effect expressions - set! and define

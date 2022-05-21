@@ -131,7 +131,7 @@ export const makeSetExp = (v: VarRef, val: CExp): SetExp =>
 
 // HW3
 export const makeTraceExp = (v: VarRef): TraceExp => 
-    // to be completed.
+    ({tag: "TraceExp", var: v});
 
 // Type predicates for disjoint types
 export const isProgram = (x: any): x is Program => x.tag === "Program";
@@ -156,7 +156,7 @@ export const isLetrecExp = (x: any): x is LetrecExp => x.tag === "LetrecExp";
 export const isSetExp = (x: any): x is SetExp => x.tag === "SetExp";
 
 // HW3
-export const isTraceExp = (x: any): x is TraceExp => // complete this
+export const isTraceExp = (x: any): x is TraceExp => x.tag === "TraceExp"
 
 // Type predicates for type unions
 export const isExp = (x: any): x is Exp => isDefineExp(x) || isCExp(x);
@@ -252,7 +252,9 @@ const parseProcExp = (vars: Sexp, body: Sexp[]): Result<ProcExp> =>
 // HW3
 export const parseTraceExp: (params: Sexp[]) => Result<TraceExp> = 
     (params) => 
-        // completer this 
+        params.length ! == 1 ? makeFailure("Expression not of form trace <varRef>") :
+        isArray(params) ? makeFailure("first exp need to be var ref") : 
+        makeOk(makeTraceExp(makeVarRef(first(params))));
         
 const isGoodBindings = (bindings: Sexp): bindings is [string, Sexp][] =>
     isArray(bindings) &&
